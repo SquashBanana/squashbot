@@ -63,4 +63,4 @@ class FunStuff(commands.Cog):
 
     @commands.command(description="Usage: ?choose <any> <amount> <of> <choices> \n\nPicks a random choice from what's input. For when you wanna settle the score some other way.")
     async def choose(self, ctx, *choicelist: str):
-        await ctx.send(f'I choose {random.choice(choicelist)}!')
+        await ctx.send(f'I choose **{random.choice(choicelist)}**!')
