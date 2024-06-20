@@ -4,7 +4,6 @@ import discord
 class Information(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
-
     @commands.command(name = "help",
                     description = "Displays information about the bot.")
     @commands.cooldown(1, 2, commands.BucketType.member)
