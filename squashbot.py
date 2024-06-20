@@ -10,8 +10,6 @@ from BotListeners import BotListeners
 BOT_TOKEN = DISCORD_TOKEN_IN_FILE
 CHANNEL_ID = 784043245465501696
 
-hourList = []
-
 bot = commands.Bot(command_prefix="?", description="Multi-purpose bot for Squash and friends." ,intents=discord.Intents.all())
 
 bot.remove_command("help")

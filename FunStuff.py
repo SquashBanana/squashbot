@@ -5,7 +5,8 @@ import time
 import asyncio
 
 from HourTimer import HourTimer
-from squashbot import hourList
+
+hourList = []
 
 class FunStuff(commands.Cog):
     def __init__(self, bot:commands.Bot):
@@ -40,7 +41,7 @@ class FunStuff(commands.Cog):
         for timer in hourList:
             if (ctx.guild == timer.active_guild):
                 timerHour = (timer.end_time - timer.start_time) / 3600
-                timers_embed.add_field(name=f'{timerHour} hour timer.', value="Ends at **<t:" + str(timer.end_time) + ":f>**", inline=False)
+                timers_embed.add_field(name=f'{timerHour} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>** \nTimer requested by: **{timer.active_user}**.", inline=False)
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
 
         await ctx.channel.send(embed=timers_embed)
@@ -54,9 +55,8 @@ class FunStuff(commands.Cog):
         timers_embed = discord.Embed(title="Timers active globally:", color=discord.Color.orange())
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
-            if (ctx.guild == timer.active_guild):
-                timerHour = (timer.end_time - timer.start_time) / 3600
-                timers_embed.add_field(name=f'{timerHour} hour timer.', value="Ends at **<t:" + str(timer.end_time) + ":f>**", inline=False)
+            timerHour = (timer.end_time - timer.start_time) / 3600
+            timers_embed.add_field(name=f'{timerHour} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>** \nTimer requested by: **{timer.active_user}**.", inline=False)
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
 
         await ctx.channel.send(embed=timers_embed)
