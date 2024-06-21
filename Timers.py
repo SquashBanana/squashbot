@@ -44,7 +44,7 @@ class Timers(commands.Cog):
             return await ctx.channel.send(f'Sorry, you took too long. (10 seconds)')
         
         if (yesORnoMessage.content.lower() == 'y'):
-            await ctx.channel.send(f'Alright, I will ping you in {hourNum:g} hours!')
+            await ctx.channel.send(f'Alright, I will ping you in {hourNum:g} hour(s)!')
             hourList.append(HourTimer(start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel))
             startTask(ctx, start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel)
 
@@ -82,14 +82,6 @@ class Timers(commands.Cog):
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
         await ctx.channel.send(embed=timers_embed)
 
-        if (ctx.author.id != 400659477994536971):
-            return
-        for t in started_tasks:
-            print(f"{t.seconds} === {t.current_loop}")
-        print("---")
-        for h in hourList:
-            print(f"{h.start_time} === {h.end_time} === {h.end_time - h.start_time}")
-
     @commands.command()
     async def timersglobal(self, ctx: commands.Context):
         if (ctx.author.id != 400659477994536971):
@@ -108,7 +100,7 @@ class Timers(commands.Cog):
     @commands.command()
     async def stoptimers(self, ctx: commands.Context):
 
-        await ctx.send(f":exclamation: This will remove *all* your currently active timers *in this server*, **are you sure?** (y/n) :exclamation:")
+        await ctx.send(f":exclamation: This will cancel *all* your currently active timers *in this server*, **are you sure?** (y/n)")
 
         def is_correct(message):
                 return message.author == ctx.author
