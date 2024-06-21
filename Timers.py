@@ -34,7 +34,7 @@ class Timers(commands.Cog):
         if (hourNum < 0.1 or hourNum > 30):
             return
 
-        await ctx.send(f"**Set a timer for it?** (y/n) (This feature is still experimental, so please let Squash know of any bugs!)")
+        await ctx.send(f"**Set a timer for it?** (y/n) *(This feature is still experimental, so please let Squash know of any bugs!)*")
 
         def is_correct(message):
                 return message.author == ctx.author
