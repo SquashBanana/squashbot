@@ -34,7 +34,7 @@ class Timers(commands.Cog):
         if (hourNum < 0.1 or hourNum > 30):
             return
 
-        await ctx.send(f"**Set a timer for it?** (y/n) \n:exclamation: This feature doesn't work yet, so you will not be pinged at the end. :exclamation:")
+        await ctx.send(f"**Set a timer for it?** (y/n) (This feature is still experimental, so please let Squash know of any bugs!)")
 
         def is_correct(message):
                 return message.author == ctx.author
@@ -49,13 +49,30 @@ class Timers(commands.Cog):
             startTask(ctx, start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel)
 
         elif (yesORnoMessage.content.lower() == 'n'):
-            await ctx.channel.send(f"Alright, I won't set a timer for you")
+            await ctx.channel.send(f"Alright, I won't set a timer for you.")
         else:
             await ctx.channel.send(f'Not a suitable answer, aborting task.')
 
 
     @commands.command()
     async def timers(self, ctx: commands.Context):
+        timers_embed = discord.Embed(title="Your active timers:", color=discord.Color.orange())
+        timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
+        for timer in hourList:
+            if (ctx.guild == timer.active_guild and ctx.author == timer.active_user):
+                timerHour = (timer.end_time - timer.start_time) / 3600
+                timers_embed.add_field(name=f'{timerHour:g} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>**", inline=False)
+        timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
+        await ctx.channel.send(embed=timers_embed)
+
+
+    @commands.command()
+    async def timersall(self, ctx: commands.Context):
+
+        if (ctx.author.id != 400659477994536971):
+            await ctx.channel.send("You're not Squash! Permission denied :x:")
+            return
+
         timers_embed = discord.Embed(title="Timers active in this server:", color=discord.Color.orange())
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
@@ -72,7 +89,6 @@ class Timers(commands.Cog):
         print("---")
         for h in hourList:
             print(f"{h.start_time} === {h.end_time} === {h.end_time - h.start_time}")
-
 
     @commands.command()
     async def timersglobal(self, ctx: commands.Context):
@@ -111,16 +127,16 @@ class Timers(commands.Cog):
             await ctx.channel.send(f'Alright, if you had any active timers, they should be gone now!')
 
         elif (yesORnoMessage.content.lower() == 'n'):
-            await ctx.channel.send(f"Alright, I won't set a timer for you")
+            await ctx.channel.send(f"Alright, nothing was deleted.")
         else:
             await ctx.channel.send(f'Not a suitable answer, aborting task.')
         
 
 
     @commands.command()
-    async def stoptimersglobal(self, ctx: commands.Context):
+    async def stoptimersall(self, ctx: commands.Context):
         if (ctx.author.id != 400659477994536971):
-            await ctx.channel.send("You're not Squash! Permission denied :x:")
+            await ctx.channel.send("You're not Squash! Permission denied. :x:")
             return
 
         for i in range(len(started_tasks) - 1, -1, -1):
@@ -128,3 +144,16 @@ class Timers(commands.Cog):
                 started_tasks[i].cancel()
                 del started_tasks[i]
                 del hourList[i]
+        await ctx.channel.send("Done deleting, ping no more!")
+
+    @commands.command()
+    async def stoptimersglobal(self, ctx: commands.Context):
+        if (ctx.author.id != 400659477994536971):
+            await ctx.channel.send("You're not Squash! Permission denied. :x:")
+            return
+
+        for i in range(len(started_tasks) - 1, -1, -1):
+            started_tasks[i].cancel()
+            del started_tasks[i]
+            del hourList[i]
+        await ctx.channel.send("Done deleting EVERYTHING, ping no more!")
