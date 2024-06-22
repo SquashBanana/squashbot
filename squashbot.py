@@ -9,7 +9,8 @@ from BotListeners import BotListeners
 from Timers import Timers
 
 BOT_TOKEN = DISCORD_TOKEN_IN_FILE
-CHANNEL_ID = 1253331751946944555
+
+CHANNEL_ID = 784043245465501696
 
 activity = discord.Activity(type=discord.ActivityType.listening, name="?help")
 bot = commands.Bot(command_prefix="?", description="Multi-purpose bot for Squash and friends." ,intents=discord.Intents.all(), activity=activity)
@@ -22,9 +23,8 @@ async def on_ready():
     await bot.add_cog(FunStuff(bot))
     await bot.add_cog(Information(bot))
     await bot.add_cog(BotListeners(bot))
-
-    print("Hello! I am alive")
+    print("Hello world!")
     channel = bot.get_channel(CHANNEL_ID)
-    await channel.send("**Hell**o! I am alive :) \nsubcribe")
+    await channel.send("SquashBot is now online! ✅")
 
 bot.run(BOT_TOKEN)
