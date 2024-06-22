@@ -6,19 +6,22 @@ import asyncio
 from HourTimer import HourTimer
 
 hourList = []
-started_tasks = []
 
-async def task_loop(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):  # the function that will "loop"
-    await active_channel.send(active_user.mention)
+@tasks.loop(seconds=3.0)
+async def task_loop(ctx):  # the function that will loop
+    for i in range(len(hourList) - 1, -1, -1):
+                if (hourList[i].end_time <= time.time()):
+                    await hourList[i].active_channel.send(hourList[i].active_user.mention)
+                    del hourList[i]
 
-def task_generator(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
-    task_time: float = end_time - start_time
-    task_object = tasks.loop(seconds=task_time, count=2)(task_loop) # turns normal function into task
-    started_tasks.append(task_object)
-    task_object.start(ctx, start_time, end_time, active_user, active_guild, active_channel) # starts the task
+# def task_generator(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
+#     task_time: float = end_time - start_time
+#     task_object = tasks.loop(seconds=task_time, count=2)(task_loop) # turns normal function into task
+#     started_tasks.append(task_object)
+#     task_object.start(ctx, start_time, end_time, active_user, active_guild, active_channel) # starts the task
     
-def startTask(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
-    task_generator(ctx, start_time, end_time, active_user, active_guild, active_channel)
+# def startTask(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
+#     task_generator(ctx, start_time, end_time, active_user, active_guild, active_channel)
 
 
 class Timers(commands.Cog):
@@ -46,7 +49,6 @@ class Timers(commands.Cog):
         if (yesORnoMessage.content.lower() == 'y'):
             await ctx.channel.send(f'Alright, I will ping you in {hourNum:g} hour(s)!')
             hourList.append(HourTimer(start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel))
-            startTask(ctx, start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel)
 
         elif (yesORnoMessage.content.lower() == 'n'):
             await ctx.channel.send(f"Alright, I won't set a timer for you.")
@@ -110,10 +112,8 @@ class Timers(commands.Cog):
             return await ctx.channel.send(f'Sorry, you took too long. (10 seconds)')
         
         if (yesORnoMessage.content.lower() == 'y'):  
-            for i in range(len(started_tasks) - 1, -1, -1):
+            for i in range(len(hourList) - 1, -1, -1):
                 if (hourList[i].active_user == ctx.author and hourList[i].active_guild == ctx.guild):
-                    started_tasks[i].cancel()
-                    del started_tasks[i]
                     del hourList[i]
 
             await ctx.channel.send(f'Alright, if you had any active timers, they should be gone now!')
@@ -131,10 +131,8 @@ class Timers(commands.Cog):
             await ctx.channel.send("You're not Squash! Permission denied. :x:")
             return
 
-        for i in range(len(started_tasks) - 1, -1, -1):
+        for i in range(len(hourList) - 1, -1, -1):
             if (hourList[i].active_guild == ctx.guild):
-                started_tasks[i].cancel()
-                del started_tasks[i]
                 del hourList[i]
         await ctx.channel.send("Done deleting, ping no more!")
 
@@ -144,8 +142,7 @@ class Timers(commands.Cog):
             await ctx.channel.send("You're not Squash! Permission denied. :x:")
             return
 
-        for i in range(len(started_tasks) - 1, -1, -1):
-            started_tasks[i].cancel()
-            del started_tasks[i]
+        for i in range(len(hourList) - 1, -1, -1):
             del hourList[i]
+
         await ctx.channel.send("Done deleting EVERYTHING, ping no more!")
