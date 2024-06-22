@@ -7,12 +7,7 @@ from HourTimer import HourTimer
 
 hourList = []
 
-@tasks.loop(seconds=3.0)
-async def task_loop(ctx):  # the function that will loop
-    for i in range(len(hourList) - 1, -1, -1):
-                if (hourList[i].end_time <= time.time()):
-                    await hourList[i].active_channel.send(hourList[i].active_user.mention)
-                    del hourList[i]
+
 
 # def task_generator(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
 #     task_time: float = end_time - start_time
@@ -27,6 +22,13 @@ async def task_loop(ctx):  # the function that will loop
 class Timers(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
+
+    @tasks.loop(seconds=3.0)
+    async def task_loop():  # the function that will loop
+        for i in range(len(hourList) - 1, -1, -1):
+            if (hourList[i].end_time <= time.time()):
+                await hourList[i].active_channel.send(f"{hourList[i].active_user.mention}, your timer has ended!")
+                del hourList[i]
 
     @commands.command(description="Usage: ?timein <number of hours> \n\nOutputs a timezone-sensitive date when the specified number of hours will pass. Afterwards asks whether to set a timer for it or not. For when you don't wanna annoy yourself with timezones.")
     async def timein(self, ctx: commands.Context, hourNum: float):
@@ -94,7 +96,11 @@ class Timers(commands.Cog):
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
             timerHour = (timer.end_time - timer.start_time) / 3600
-            timers_embed.add_field(name=f'{timerHour} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>** \nTimer requested by: **{timer.active_user}** in **{timer.active_guild.name}**.", inline=False)
+            if (timer.active_guild):
+                timers_embed.add_field(name=f'{timerHour} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>** \nTimer requested by: **{timer.active_user}** in **{timer.active_guild.name}**.", inline=False)
+            else:
+                timers_embed.add_field(name=f'{timerHour} hour timer.', value=f"Ends at **<t:{timer.end_time}:f>** \nTimer requested by: **{timer.active_user}** in **direct messages**.", inline=False)
+
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
         await ctx.channel.send(embed=timers_embed)
 

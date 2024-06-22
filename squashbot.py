@@ -23,6 +23,8 @@ async def on_ready():
     await bot.add_cog(FunStuff(bot))
     await bot.add_cog(Information(bot))
     await bot.add_cog(BotListeners(bot))
+    Timers.task_loop.start()
+    
     print("Hello world!")
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send("SquashBot is now online! ✅")
