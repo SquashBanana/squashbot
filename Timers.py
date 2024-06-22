@@ -7,18 +7,6 @@ from HourTimer import HourTimer
 
 hourList = []
 
-
-
-# def task_generator(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
-#     task_time: float = end_time - start_time
-#     task_object = tasks.loop(seconds=task_time, count=2)(task_loop) # turns normal function into task
-#     started_tasks.append(task_object)
-#     task_object.start(ctx, start_time, end_time, active_user, active_guild, active_channel) # starts the task
-    
-# def startTask(ctx, start_time: int, end_time: int, active_user: discord.User, active_guild: discord.Guild, active_channel: discord.abc.Messageable):
-#     task_generator(ctx, start_time, end_time, active_user, active_guild, active_channel)
-
-
 class Timers(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
@@ -48,6 +36,15 @@ class Timers(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.channel.send(f'Sorry, you took too long. (10 seconds)')
         
+        timer_counter: int = 0
+        for timer in hourList:
+            if (ctx.guild == timer.active_guild and ctx.author == timer.active_user and timer_counter < 5):
+                timer_counter += 1
+            elif (timer_counter >= 5):
+                await ctx.channel.send(f"Sorry, you've already set the maximum amount of timers in this server. (5 timers)")
+                return
+        del timer_counter
+
         if (yesORnoMessage.content.lower() == 'y'):
             await ctx.channel.send(f'Alright, I will ping you in {hourNum:g} hour(s)!')
             hourList.append(HourTimer(start_epoch_time, end_epoch_time, ctx.author, ctx.guild, ctx.channel))
@@ -60,7 +57,7 @@ class Timers(commands.Cog):
 
     @commands.command()
     async def timers(self, ctx: commands.Context):
-        timers_embed = discord.Embed(title="Your active timers:", color=discord.Color.orange())
+        timers_embed = discord.Embed(title="Your active timers:", color=discord.Color.teal())
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
             if (ctx.guild == timer.active_guild and ctx.author == timer.active_user):
@@ -77,7 +74,7 @@ class Timers(commands.Cog):
             await ctx.channel.send("You're not Squash! Permission denied :x:")
             return
 
-        timers_embed = discord.Embed(title="Timers active in this server:", color=discord.Color.orange())
+        timers_embed = discord.Embed(title="Timers active in this server:", color=discord.Color.teal())
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
             if (ctx.guild == timer.active_guild):
@@ -92,7 +89,7 @@ class Timers(commands.Cog):
             await ctx.channel.send("You're not Squash! Permission denied :x:")
             return
 
-        timers_embed = discord.Embed(title="Timers active globally:", color=discord.Color.orange())
+        timers_embed = discord.Embed(title="Timers active globally:", color=discord.Color.teal())
         timers_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
         for timer in hourList:
             timerHour = (timer.end_time - timer.start_time) / 3600
