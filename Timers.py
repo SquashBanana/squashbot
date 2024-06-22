@@ -18,6 +18,7 @@ class Timers(commands.Cog):
                 await hourList[i].active_channel.send(f"{hourList[i].active_user.mention}, your timer has ended!")
                 del hourList[i]
 
+    @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.command(description="Usage: ?timein <number of hours> \n\nOutputs a timezone-sensitive date when the specified number of hours will pass. Afterwards asks whether to set a timer for it or not. For when you don't wanna annoy yourself with timezones.")
     async def timein(self, ctx: commands.Context, hourNum: float):
         start_epoch_time = int(time.time())
@@ -54,7 +55,7 @@ class Timers(commands.Cog):
         else:
             await ctx.channel.send(f'Not a suitable answer, aborting task.')
 
-
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def timers(self, ctx: commands.Context):
         timers_embed = discord.Embed(title="Your active timers:", color=discord.Color.teal())
@@ -66,7 +67,7 @@ class Timers(commands.Cog):
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
         await ctx.channel.send(embed=timers_embed)
 
-
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def timersall(self, ctx: commands.Context):
 
@@ -83,6 +84,7 @@ class Timers(commands.Cog):
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
         await ctx.channel.send(embed=timers_embed)
 
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def timersglobal(self, ctx: commands.Context):
         if (ctx.author.id != 400659477994536971):
@@ -101,7 +103,7 @@ class Timers(commands.Cog):
         timers_embed.set_footer(text=f"Requested by {ctx.author}.", icon_url=ctx.author.avatar)
         await ctx.channel.send(embed=timers_embed)
 
-
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def stoptimers(self, ctx: commands.Context):
 
@@ -126,8 +128,7 @@ class Timers(commands.Cog):
         else:
             await ctx.channel.send(f'Not a suitable answer, aborting task.')
         
-
-
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def stoptimersall(self, ctx: commands.Context):
         if (ctx.author.id != 400659477994536971):
@@ -139,6 +140,7 @@ class Timers(commands.Cog):
                 del hourList[i]
         await ctx.channel.send("Done deleting, ping no more!")
 
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command()
     async def stoptimersglobal(self, ctx: commands.Context):
         if (ctx.author.id != 400659477994536971):

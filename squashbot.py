@@ -9,7 +9,7 @@ from BotListeners import BotListeners
 from Timers import Timers
 
 BOT_TOKEN = DISCORD_TOKEN_IN_FILE
-
+BOT_VERSION = 0.1
 CHANNEL_ID = 784043245465501696
 
 activity = discord.Activity(type=discord.ActivityType.listening, name="?help")
@@ -24,7 +24,7 @@ async def on_ready():
     await bot.add_cog(Information(bot))
     await bot.add_cog(BotListeners(bot))
     Timers.task_loop.start()
-    
+
     print("Hello world!")
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send("SquashBot is now online! ✅")

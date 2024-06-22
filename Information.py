@@ -4,10 +4,10 @@ import discord
 class Information(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
+
     @commands.command(name = "help",
                     description = "Displays information about the bot.")
-    @commands.cooldown(1, 2, commands.BucketType.member)
-    
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def help(self, message:discord.Message, category:str=""):
         if (category.lower()==""):
             help_embed = discord.Embed(title="Command categories:", color=discord.Color.teal())
@@ -23,6 +23,7 @@ class Information(commands.Cog):
             help_embed = discord.Embed(title="Available commands and their usage:", color=discord.Color.teal())
             help_embed.set_author(name="SquashBot", icon_url=self.bot.user.avatar)
             help_embed.add_field(name="?help", value="Use if you're confused about how to use this bot.", inline=False)
+            help_embed.add_field(name="?version", value="Displays current bot version.", inline=False)
             help_embed.set_footer(text=f"Requested by {message.author}.", icon_url=message.author.avatar)
             await message.channel.send(embed=help_embed)
 
@@ -45,4 +46,8 @@ class Information(commands.Cog):
         else:
             await message.channel.send(f"Sorry, **\"{category}\"** doesn't seem to be an existing category. Look at **?help** and try again!")
 
-        
+    @commands.command(name = "version",
+                    description = "Displays bot version.")
+    @commands.cooldown(1, 2, commands.BucketType.user)
+    async def version(self, ctx: commands.Context):
+        await ctx.channel.send(f"This is **SquashBot v0.1**!")
