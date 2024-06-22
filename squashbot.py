@@ -29,4 +29,9 @@ async def on_ready():
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send("SquashBot is now online! ✅")
 
+@bot.event
+async def on_command_error(ctx: commands.Context, error):
+    if (isinstance(error, commands.CommandOnCooldown)):
+        await ctx.send("**You're on a cooldown!** Try again in {:.2f} seconds.".format(error.retry_after))
+
 bot.run(BOT_TOKEN)
