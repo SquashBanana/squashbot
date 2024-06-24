@@ -7,10 +7,11 @@ from Information import Information
 from FunStuff import FunStuff
 from BotListeners import BotListeners
 from Timers import Timers
+from Voice import Music
 
 BOT_TOKEN = DISCORD_TOKEN_IN_FILE
 BOT_VERSION = 0.1
-CHANNEL_ID = 784043245465501696
+CHANNEL_ID = 1253331751946944555
 
 activity = discord.Activity(type=discord.ActivityType.listening, name="?help")
 bot = commands.Bot(command_prefix="?", description="Multi-purpose bot for Squash and friends." ,intents=discord.Intents.all(), activity=activity)
@@ -23,6 +24,7 @@ async def on_ready():
     await bot.add_cog(FunStuff(bot))
     await bot.add_cog(Information(bot))
     await bot.add_cog(BotListeners(bot))
+#    await bot.add_cog(Music(bot))
     Timers.task_loop.start()
 
     print("Hello world!")
